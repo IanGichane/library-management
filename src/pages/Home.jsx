@@ -1,58 +1,35 @@
-import {
-  Card,
-  CardBody,
-  Image,
-  Stack,
-  Heading,
-  Text,
-  Divider,
-  CardFooter,
-  ButtonGroup,
-  Button,
-  Tooltip,
-} from "@chakra-ui/react";
+import { useEffect, useState,useContext } from "react";
+
+
+import { BookCard } from "../components/Body/BookCard";
+import {  SimpleGrid } from "@chakra-ui/react";
+import { Search } from "../components/Body/Search";
+import DataContext from "../Utilities/DataContext";
+
 
 export const Home = () => {
+	
+   const [searchTerm, setSearchTerm] = useState("");
+   const { books, setBooks } = useContext(DataContext);
+
+
+const searchedBooks = books.filter((book) =>
+  book.title.toLowerCase().includes(searchTerm.toLowerCase())
+);
+
+
   return (
     <>
-      <Card maxW="sm">
-        <CardBody>
-          <Image
-            src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-            alt="Green double couch with wooden legs"
-            borderRadius="lg"
-          />
-          <Stack mt="6" spacing="3">
-            <Heading size="md">The river and the source</Heading>
-            <Tooltip
-              label="This sofa is perfect for modern tropical spaces, baroque inspired
-              spaces, earthy toned spaces and for people who love a chic design
-              with a sprinkle of vintage design."
-              aria-label="A tooltip"
-            >
-              synopsis
-            </Tooltip>
-            <Text color="blue.600" fontSize="2xl">
-              Available 19
-            </Text>
-          </Stack>
-        </CardBody>
-        <Divider />
-        <CardFooter>
-          <ButtonGroup spacing="1">
-            <Button variant="ghost" colorScheme="blue">
-              Borrow
-            </Button>
+      <Search
+        searchTerm={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
 
-            <Button variant="ghost" colorScheme="blue">
-              reserve
-            </Button>
-            <Button variant="ghost" colorScheme="blue">
-              Check out
-            </Button>
-          </ButtonGroup>
-        </CardFooter>
-      </Card>
+      <SimpleGrid columns={{ sm: 2, md: 3, lg: 6 }} spacing={5}>
+        {searchedBooks.map((book, index) => (
+          <BookCard key={book.ISBN} {...book} />
+        ))}
+      </SimpleGrid>
     </>
   );
 };
